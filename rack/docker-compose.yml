@@ -1,0 +1,41 @@
+version: '2'
+services: 
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: app
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+  app: 
+    build: .
+    command: rackup --host 0.0.0.0 -p 9292
+    volumes:
+      - ".:/app"
+    ports: 
+      - "3001:9292"
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      DB_USER: user
+      DB_NAME: app
+      DB_PASSWORD: password
+      DB_HOST: localhost
+      DB_PORT: 3306
+
+# Names our volume
+volumes:
+  my-db:
