@@ -22,12 +22,4 @@ module Rack
   end
 end
 
-if $0 == __FILE__
-  require 'rack'
-  require 'rack/showexceptions'
-  Rack::Handler::WEBrick.run \
-    Rack::ShowExceptions.new(Rack::Lint.new(Rack::ServerStatus.new)),
-    :Port => 9292
-end
-
 run Rack::ServerStatus.new
